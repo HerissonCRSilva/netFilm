@@ -2,25 +2,38 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './favoritos.css';
 
-function Favoritos(){
+function Favoritos() {
     const [filmes, setFilmes] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         const minhaLista = localStorage.getItem("@netFilm");
         setFilmes(JSON.parse(minhaLista) || []);
-    }, [])
-    return(
+    }, []);
+
+    function excluirFilme(id) {
+        let filtroFilmes = filmes.filter((item) => 
+        {
+            return (item.id !== id);
+        });
+
+        setFilmes(filtroFilmes);
+        localStorage.setItem('@netFilm', JSON.stringify(filtroFilmes));
+    }
+    return (
         <div className='meus-filmes'>
             <h1>Meus Filmes</h1>
+            {
+                filmes.length === 0 && <span>Você não tem nenhum filme salvo.</span>
+            }
             <ul>
                 {
                     filmes.map((item) => {
-                        return(
+                        return (
                             <li key={item.id}>
                                 <span>{item.title}</span>
                                 <div>
                                     <Link to={`/filme/${item.id}`}>Ver detalhes</Link>
-                                    <button>Excluir</button>
+                                    <button onClick={() => excluirFilme(item.id)}>Excluir</button>
                                 </div>
                             </li>
                         )
